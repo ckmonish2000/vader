@@ -4,6 +4,7 @@ import { ScriptsModule } from './scripts/scripts.module';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { CliTokenModule } from './cli-token/cli-token.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { UserModule } from './user/user.module';
     ScriptsModule,
     AuthModule,
     PrismaModule,
-    UserModule
+    UserModule,
+    CliTokenModule
   ],
 })
 export class AppModule { }
