@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/services/UserService";
-import { useUserStore } from "@/stores/userStore";
+import { useUserStore } from "@/stores/UserStore";
 
 export function UserNav() {
   const { user } = useUserStore();
@@ -21,7 +21,7 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="/avatars/01.png" alt="@shadcn" />
+            <AvatarImage src={user?.photoURL} alt={user?.displayName} />
             <AvatarFallback>{user?.displayName.charAt(0)}</AvatarFallback>
           </Avatar>
         </Button>
