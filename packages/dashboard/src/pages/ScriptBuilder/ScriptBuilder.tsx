@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { updateScript } from "@/services/scriptService";
 import { toast } from "react-toastify";
+
 interface Command {
   id: string;
   title: string;
@@ -25,7 +26,7 @@ function ScriptBuilder() {
     mutationFn: async () => {
       if (!scriptID) throw new Error("No script ID provided");
       const commandIds = commands.map((cmd) => cmd.id);
-      return updateScript(scriptID, scriptID, commandIds);
+      return updateScript(scriptID, commandIds);
     },
     onSuccess: () => {
       toast.success("Script saved successfully");
@@ -51,12 +52,7 @@ function ScriptBuilder() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h1>Command List</h1>
-            <button
-              onClick={() => setDialogOpen(true)}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Add Command
-            </button>
+            <Button onClick={() => setDialogOpen(true)}>Add Command</Button>
           </div>
 
           {/* Command Cards */}
@@ -72,13 +68,12 @@ function ScriptBuilder() {
 
           {/* Centered Save Button */}
           <div className="flex justify-center mt-8">
-            <button
+            <Button
               onClick={() => saveScriptMutation()}
               disabled={isPending || commands.length === 0}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending ? "Saving..." : "Save Script"}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
