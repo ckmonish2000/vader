@@ -1,0 +1,13 @@
+{
+    "name": "vader-cli",
+    "version": "0.0.1",
+    "description": "Vader CLI",
+    "main": "cmd/main.go",
+    "bin": {
+        "vader": "./cmd/main.go"
+    },
+    "scripts": {
+        "build": "go build -o vader cmd/main.go",
+        "run": "go run cmd/main.go"
+    }
+}

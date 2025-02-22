@@ -1,0 +1,16 @@
+{
+  "name": "vader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --filter backend dev & pnpm --filter frontend dev",
+    "build": "pnpm --filter backend build & pnpm --filter frontend build",
+    "start": "pnpm --filter backend start & pnpm --filter frontend serve",
+    "vader": "pnpm --filter vader-cli build && pnpm --filter vader-cli run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.4.1"
+}
