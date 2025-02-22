@@ -14,7 +14,8 @@ export class ScriptsController {
     @UseGuards(JwtAuthGuard)
     async getScripts(@Query() query: GetScriptsDto) {
         const take = query && typeof query.take === 'string' ? parseInt(query.take) : query?.take;
-        return this.scriptsService.getScripts({ ...query, take });
+        const response = await this.scriptsService.getScripts({ ...query, take });
+        return response;
     }
 
     @Get(':id')
