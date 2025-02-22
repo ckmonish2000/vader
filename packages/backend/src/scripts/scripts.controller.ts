@@ -1,34 +1,59 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ScriptsService } from './scripts.service';
 import CreateScriptDto from './dto/create-script-dto';
 import UpdateScriptDto from './dto/update-script-dto';
+import GetScriptsDto from './dto/get-scripts-dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import * as E from 'fp-ts/Either';
+import { throwHTTPErr } from 'src/utils';
 @Controller('scripts')
 export class ScriptsController {
-    constructor(private readonly scriptsService: ScriptsService) {}
+    constructor(private readonly scriptsService: ScriptsService) { }
 
     @Get()
-    async getScripts() {
-        return this.scriptsService.getScripts();
+    @UseGuards(JwtAuthGuard)
+    async getScripts(@Query() query: GetScriptsDto) {
+        const take = query && typeof query.take === 'string' ? parseInt(query.take) : query?.take;
+        return this.scriptsService.getScripts({ ...query, take });
     }
 
     @Get(':id')
+    @UseGuards(JwtAuthGuard)
     async getScript(@Param('id') id: string) {
-        return this.scriptsService.getScript(id);
+        const script = await this.scriptsService.getScript(id);
+        if (E.isLeft(script)) {
+            throwHTTPErr(script.left);
+        }
+        return script.right;
     }
 
     @Post()
+    @UseGuards(JwtAuthGuard)
     async createScript(@Body() script: CreateScriptDto) {
-        return this.scriptsService.createScript(script);
+        const newScript = await this.scriptsService.createScript(script);
+        if (E.isLeft(newScript)) {
+            throwHTTPErr(newScript.left);
+        }
+        return newScript.right;
     }
 
     @Put(':id')
+    @UseGuards(JwtAuthGuard)
     async updateScript(@Param('id') id: string, @Body() script: UpdateScriptDto) {
-        return this.scriptsService.updateScript(id, script);
+        const updatedScript = await this.scriptsService.updateScript(id, script);
+        if (E.isLeft(updatedScript)) {
+            throwHTTPErr(updatedScript.left);
+        }
+        return updatedScript.right;
     }
 
-    @Delete
-    (':id')
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     async deleteScript(@Param('id') id: string) {
-        return this.scriptsService.deleteScript(id);
+        const deletedScript = await this.scriptsService.deleteScript(id);
+        if (E.isLeft(deletedScript)) {
+            throwHTTPErr(deletedScript.left);
+        }
+        return deletedScript.right;
     }
 }
