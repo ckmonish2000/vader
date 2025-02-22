@@ -22,26 +22,12 @@ export class ScriptsService {
         orderBy: {
           id: 'asc',
         },
-        include: {
-          commands: {
-            include: {
-              command: true,
-            },
-          },
-        },
       });
     }
 
     return this.prisma.script.findMany({
       take,
       skip: 1,
-      include: {
-        commands: {
-          include: {
-            command: true,
-          },
-        },
-      },
       cursor: { id: cursor },
       orderBy: {
         id: 'asc',
@@ -87,18 +73,22 @@ export class ScriptsService {
       }
 
       const newScriptCommands = await this.prisma.scriptCommand.createMany({
-        data: script.commands.map((command, index) => ({
-          scriptId: newScript.id,
-          commandId: command,
-          order: index,
-        })),
+        data: script.commands?.map(
+          (command: { id: string; args?: string }, index) => ({
+            commandId: command.id,
+            scriptId: newScript.id,
+            order: index,
+            args: command.args,
+          }),
+        ),
       });
 
       return E.right({
         ...newScript,
         commands: newScriptCommands,
       });
-    } catch () {
+    } catch (error) {
+      console.log(error);
       return E.left(<RESTError>{
         message: 'scripts/create_failed',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -159,20 +149,61 @@ export class ScriptsService {
         });
 
         await this.prisma.scriptCommand.createMany({
-          data: script.commands.map((command, index) => ({
-            scriptId: id,
-            commandId: command,
-            order: index,
-          })),
+          data: script.commands?.map(
+            (command: { id: string; args?: string }, index) => ({
+              commandId: command.id,
+              scriptId: id,
+              order: index,
+              args: command.args,
+            }),
+          ),
         });
       }
 
-      return E.right(scriptToUpdate);
+      return E.right(scriptToUpdate.right);
     } catch (err) {
       return E.left(<RESTError>{
         message: 'scripts/update_failed',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       });
     }
+  }
+
+  async getParsedScript(id: string) {
+    const script = await this.getScript(id);
+    if (E.isLeft(script)) {
+      return script;
+    }
+
+    const scriptCommands = await this.prisma.scriptCommand.findMany({
+      where: {
+        scriptId: id,
+      },
+      include: {
+        command: true,
+        script: true,
+      },
+    });
+
+    const parsedScript = scriptCommands?.map((command) => {
+      if (command.command.isInputAllowed) {
+        const args: any = command.args ? JSON.parse(command.args) : {};
+        let cmd = command.command.cmd;
+        Object.keys(args).forEach((key) => {
+          cmd = cmd.replaceAll(`${key}`, args[key]);
+        });
+        return {
+          command: cmd,
+          title: command.command.title,
+          id: command.command.id,
+        };
+      }
+      return {
+        command: command.command.cmd,
+        title: command.command.title,
+        id: command.command.id,
+      };
+    });
+    return E.right(parsedScript);
   }
 }

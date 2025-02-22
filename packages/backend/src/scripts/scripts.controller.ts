@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -51,7 +51,7 @@ export class ScriptsController {
     return newScript.right;
   }
 
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async updateScript(@Param('id') id: string, @Body() script: UpdateScriptDto) {
     const updatedScript = await this.scriptsService.updateScript(id, script);
@@ -69,5 +69,12 @@ export class ScriptsController {
       throwHTTPErr(deletedScript.left);
     }
     return deletedScript.right;
+  }
+
+
+  @Get(':id/parsed')
+  async getParsedScript(@Param('id') id: string) {
+    const parsedScript = await this.scriptsService.getParsedScript(id);
+    return parsedScript;
   }
 }
