@@ -12,3 +12,14 @@ export const createScript = async (scriptName: string) => {
     commands: [],
   });
 };
+
+export const updateScript = async (
+  scriptID: string,
+  scriptName: string,
+  commands: string[]
+) => {
+  await axiosInstance.put<Script>(`/scripts/${scriptID}`, {
+    name: scriptName,
+    commands: commands,
+  });
+};

@@ -1,106 +1,93 @@
 import PageHeading from "@/components/common/PageHeading";
 import { useParams } from "react-router-dom";
-import CommandList from "@/components/common/CommandList";
-
-const MOCK_COMMANDS = [
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  // ... existing mock data ...
-];
+import { useState } from "react";
+import CommandCard from "@/components/common/CommandCard";
+import CommandSelectionDialog from "@/components/common/CommandSelectionDialog";
+import { useMutation } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { updateScript } from "@/services/scriptService";
+import { toast } from "react-toastify";
+interface Command {
+  id: string;
+  title: string;
+  cmd: string;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 function ScriptBuilder() {
   const { scriptID } = useParams();
+  const [commands, setCommands] = useState<Command[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { mutate: saveScriptMutation, isPending } = useMutation({
+    mutationFn: async () => {
+      if (!scriptID) throw new Error("No script ID provided");
+      const commandIds = commands.map((cmd) => cmd.id);
+      return updateScript(scriptID, scriptID, commandIds);
+    },
+    onSuccess: () => {
+      toast.success("Script saved successfully");
+    },
+    onError: (error) => {
+      console.error("Error saving script:", error);
+      toast.error("Failed to save script");
+    },
+  });
+
+  const handleAddCommand = (command: Command) => {
+    setCommands([...commands, command]);
+  };
+
+  const handleDeleteCommand = (index: number) => {
+    setCommands(commands.filter((_, i) => i !== index));
+  };
 
   return (
-    <div className="flex h-full">
-      {/* Main content */}
+    <div className="flex h-full flex-col">
       <div className="flex-1 p-4">
         <PageHeading title="Script Builder" />
         <div>
-          <h1>Command List</h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1>Command List</h1>
+            <button
+              onClick={() => setDialogOpen(true)}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Add Command
+            </button>
+          </div>
+
+          {/* Command Cards */}
+          <div className="space-y-4">
+            {commands.map((command, index) => (
+              <CommandCard
+                key={command.id}
+                command={command.title}
+                onDelete={() => handleDeleteCommand(index)}
+              />
+            ))}
+          </div>
+
+          {/* Centered Save Button */}
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={() => saveScriptMutation()}
+              disabled={isPending || commands.length === 0}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isPending ? "Saving..." : "Save Script"}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Command list moved to right side */}
-      <CommandList commands={MOCK_COMMANDS} />
+      <CommandSelectionDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onCommandSelect={handleAddCommand}
+      />
     </div>
   );
 }
