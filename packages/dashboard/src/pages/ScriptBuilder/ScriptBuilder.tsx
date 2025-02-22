@@ -48,14 +48,12 @@ function ScriptBuilder() {
   return (
     <div className="flex h-full flex-col">
       <div className="flex-1 p-4">
-        <PageHeading title="Script Builder" />
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h1>Command List</h1>
+            <PageHeading title="Script Builder" />
             <Button onClick={() => setDialogOpen(true)}>Add Command</Button>
           </div>
 
-          {/* Command Cards */}
           <div className="space-y-4">
             {commands.map((command, index) => (
               <CommandCard
@@ -66,7 +64,6 @@ function ScriptBuilder() {
             ))}
           </div>
 
-          {/* Centered Save Button */}
           <div className="flex justify-center mt-8">
             <Button
               onClick={() => saveScriptMutation()}
