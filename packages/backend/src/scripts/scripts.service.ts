@@ -22,6 +22,13 @@ export class ScriptsService {
         orderBy: {
           id: 'asc',
         },
+        include: {
+          commands: {
+            include: {
+              command: true,
+            },
+          },
+        },
       });
     }
 
@@ -31,6 +38,13 @@ export class ScriptsService {
       cursor: { id: cursor },
       orderBy: {
         id: 'asc',
+      },
+      include: {
+        commands: {
+          include: {
+            command: true,
+          },
+        },
       },
     });
   }

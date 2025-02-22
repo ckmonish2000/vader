@@ -1,5 +1,4 @@
 import PageHeading from "@/components/common/PageHeading";
-import PageHeading from "@/components/common/PageHeading";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import CommandCard from "@/components/common/CommandCard";
