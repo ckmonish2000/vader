@@ -49,6 +49,7 @@ model Command {
   title     String
   cmd       String
   type      CommandType 
+  acceptArgs Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   scripts   ScriptCommand[]
@@ -70,6 +71,7 @@ model ScriptCommand {
   script    Script   @relation(fields: [scriptId], references: [id],onDelete: Cascade)
   scriptId  String
   order     Int
+  args      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   outputs   CommandOutput[]
