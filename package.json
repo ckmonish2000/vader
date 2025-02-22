@@ -3,12 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "dev": "pnpm --filter backend dev & pnpm --filter frontend dev",
-    "build": "pnpm --filter backend build & pnpm --filter frontend build",
-    "start": "pnpm --filter backend start & pnpm --filter frontend serve",
-    "vader": "pnpm --filter vader-cli build && pnpm --filter vader-cli run"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
