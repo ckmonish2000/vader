@@ -6,6 +6,11 @@ export const getScripts = async (): Promise<Script[]> => {
   return response.data;
 };
 
+export const getScript = async (scriptID: string): Promise<Script> => {
+  const response = await axiosInstance.get<Script>(`/scripts/${scriptID}`);
+  return response.data;
+};
+
 export const createScript = async (scriptName: string) => {
   await axiosInstance.post<Script>("/scripts", {
     name: scriptName,
@@ -13,8 +18,16 @@ export const createScript = async (scriptName: string) => {
   });
 };
 
-export const updateScript = async (scriptID: string, commands: string[]) => {
-  await axiosInstance.put<Script>(`/scripts/${scriptID}`, {
+type UpdateScriptCommand = {
+  id: string;
+  args: string;
+};
+
+export const updateScript = async (
+  scriptID: string,
+  commands: UpdateScriptCommand[]
+) => {
+  await axiosInstance.patch<Script>(`/scripts/${scriptID}`, {
     commands: commands,
   });
 };
