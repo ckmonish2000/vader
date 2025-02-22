@@ -1,9 +1,10 @@
-import { CommandType } from "@prisma/client";
+import { CommandType } from '@prisma/client';
 
 class CreateCommandDto {
-    title: string;
-    cmd: string;
-    type: CommandType;
+  title: string;
+  cmd: string;
+  type: CommandType;
+  isInputAllowed?: boolean;
 }
 
 export default CreateCommandDto;

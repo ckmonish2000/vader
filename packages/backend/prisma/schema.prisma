@@ -18,15 +18,14 @@ enum CommandType {
   DEFAULT
 }
 
-
 model User {
-  uid              String     @id @default(cuid())
+  uid              String    @id @default(cuid())
   displayName      String?
-  email            String?    @unique
+  email            String?   @unique
   photoURL         String?
   refreshToken     String?
   providerAccounts Account[]
-  createdOn        DateTime   @default(now()) @db.Timestamp(3)
+  createdOn        DateTime  @default(now()) @db.Timestamp(3)
 }
 
 model Account {
@@ -43,47 +42,47 @@ model Account {
   @@unique(fields: [provider, providerAccountId], name: "verifyProviderAccount")
 }
 
-
 model Command {
-  id        String   @id @default(cuid())
-  title     String
-  cmd       String
-  type      CommandType 
-  acceptArgs Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  scripts   ScriptCommand[]
+  id         String          @id @default(cuid())
+  title      String
+  cmd        String
+  type       CommandType
+  isInputAllowed Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  scripts    ScriptCommand[]
 }
 
 model Script {
-  id        String   @id @default(cuid())
-  name      String
-  updateCounter Int @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  commands  ScriptCommand[]
+  id            String          @id @default(cuid())
+  name          String
+  updateCounter Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  commands      ScriptCommand[]
 }
 
 model ScriptCommand {
-  id        String   @id @default(cuid())
-  command   Command  @relation(fields: [commandId], references: [id])
+  id        String          @id @default(cuid())
+  command   Command         @relation(fields: [commandId], references: [id], onDelete: Cascade)
   commandId String
-  script    Script   @relation(fields: [scriptId], references: [id],onDelete: Cascade)
+  script    Script          @relation(fields: [scriptId], references: [id], onDelete: Cascade)
   scriptId  String
   order     Int
   args      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
   outputs   CommandOutput[]
+
   @@unique([commandId, scriptId])
 }
 
 model CommandOutput {
-  id        String   @id @default(cuid())
+  id              String        @id @default(cuid())
   scriptCommandId String
-  scriptCommand ScriptCommand @relation(fields: [scriptCommandId], references: [id])
-  output    String
-  scriptId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  scriptCommand   ScriptCommand @relation(fields: [scriptCommandId], references: [id])
+  output          String
+  scriptId        String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }

@@ -1,6 +1,10 @@
 class UpdateScriptDto {
-    name?: string;
-    commands?: string[];
+  name?: string;
+  commands?: {
+    id: string;
+    args?: string;
+  }[];
+  args?: string;
 }
 
 export default UpdateScriptDto;
