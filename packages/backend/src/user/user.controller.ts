@@ -8,7 +8,7 @@ import * as E from 'fp-ts/Either';
 import { throwHTTPErr } from 'src/utils';
 import { USER_NOT_FOUND } from 'src/errors';
 
-@Controller()
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
