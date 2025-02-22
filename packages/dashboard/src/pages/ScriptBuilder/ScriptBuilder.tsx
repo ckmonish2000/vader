@@ -89,7 +89,7 @@ function ScriptBuilder() {
               ← Back
             </Button>
             <div className="flex items-center justify-between mb-4">
-              <PageHeading title="Script Builder" />
+              <PageHeading title={scriptData?.name || "Script Builder"} />
               <Button onClick={() => setDialogOpen(true)}>Add Command</Button>
             </div>
 

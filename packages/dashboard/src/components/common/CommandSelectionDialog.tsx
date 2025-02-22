@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Command } from "@/types/Script";
+import { useQuery } from "@tanstack/react-query";
+import { getCommands } from "@/services/cmdService";
 
 interface CommandSelectionDialogProps {
   open: boolean;
@@ -18,104 +20,16 @@ interface CommandSelectionDialogProps {
   onCommandSelect: (command: Command, args?: string) => void;
 }
 
-const mockCommands: Command[] = [
-  {
-    id: "102ca71b-1eed-44c2-9161-6cd3e53b7663",
-    title: "get node version",
-    cmd: "node -v",
-    type: "DEFAULT",
-    isInputAllowed: true,
-    createdAt: "2025-02-22T13:02:16.647Z",
-    updatedAt: "2025-02-22T13:02:16.647Z",
-  },
-  {
-    id: "43513278-973a-4565-81ef-3d668a1265ed",
-    title: "get docker version",
-    cmd: "docker -v",
-    type: "DEFAULT",
-    isInputAllowed: false,
-    createdAt: "2025-02-22T13:02:22.007Z",
-    updatedAt: "2025-02-22T13:02:22.007Z",
-  },
-  {
-    id: "5692e0c6-5e5f-41ca-86be-5c4f1c46bd7c",
-    title: "ping google",
-    cmd: "ping https://www.google.com",
-    type: "DEFAULT",
-    isInputAllowed: true,
-    createdAt: "2025-02-22T13:02:49.870Z",
-    updatedAt: "2025-02-22T13:02:49.870Z",
-  },
-  {
-    id: "907d5eb1-a959-4ded-8cdd-beec54691f3d",
-    title: "get npm version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    isInputAllowed: false,
-    createdAt: "2025-02-22T13:01:57.929Z",
-    updatedAt: "2025-02-22T13:01:57.929Z",
-  },
-  {
-    id: "cm7ggxti90000oyzaz8sm6ye4",
-    title: "Get OS Information",
-    cmd: "uname -s && uname -r && uname -m",
-    type: "DEFAULT",
-    isInputAllowed: true,
-    createdAt: "2025-02-22T17:23:17.025Z",
-    updatedAt: "2025-02-22T17:23:17.025Z",
-  },
-  {
-    id: "cm7ggxti90001oyzamfpik78y",
-    title: "Get CPU Information",
-    cmd: 'lscpu | grep "Model name"',
-    type: "DEFAULT",
-    isInputAllowed: false,
-    createdAt: "2025-02-22T17:23:17.025Z",
-    updatedAt: "2025-02-22T17:23:17.025Z",
-  },
-  {
-    id: "cm7ggxti90002oyzab1pymbrq",
-    title: "Get Memory Usage",
-    cmd: "free -h | grep Mem | awk '{print $3 \"/\" $2}'",
-    type: "DEFAULT",
-    isInputAllowed: false,
-    createdAt: "2025-02-22T17:23:17.025Z",
-    updatedAt: "2025-02-22T17:23:17.025Z",
-  },
-  {
-    id: "cm7ggxti90003oyzalcs9i4xc",
-    title: "Get Disk Usage",
-    cmd: 'df -h / | grep / | awk \'{print $3 "/" $2 " (" $5 " used)"}\'',
-    type: "DEFAULT",
-    isInputAllowed: false,
-    createdAt: "2025-02-22T17:23:17.025Z",
-    updatedAt: "2025-02-22T17:23:17.025Z",
-  },
-  {
-    id: "cm7ggxti90004oyzahnvicr1s",
-    title: "Get Node.js Version",
-    cmd: "node -v",
-    type: "DEFAULT",
-    isInputAllowed: false,
-    createdAt: "2025-02-22T17:23:17.025Z",
-    updatedAt: "2025-02-22T17:23:17.025Z",
-  },
-  {
-    id: "cm7ggxti90005oyzajftiqc7o",
-    title: "Get NPM Version",
-    cmd: "npm -v",
-    type: "DEFAULT",
-    isInputAllowed: false,
-    createdAt: "2025-02-22T17:23:17.025Z",
-    updatedAt: "2025-02-22T17:23:17.025Z",
-  },
-];
-
 function CommandSelectionDialog({
   open,
   onOpenChange,
   onCommandSelect,
 }: CommandSelectionDialogProps) {
+  const { data: commands = [] } = useQuery({
+    queryKey: ["commands"],
+    queryFn: getCommands,
+  });
+
   const [selectedCommand, setSelectedCommand] = useState<Command | null>(null);
   const [commandInput, setCommandInput] = useState<string>("");
 
@@ -141,7 +55,7 @@ function CommandSelectionDialog({
           <Card className="w-1/2">
             <ScrollArea className="h-full">
               <CardContent className="space-y-2 p-4">
-                {mockCommands.map((command) => (
+                {commands.map((command) => (
                   <Button
                     key={command.id}
                     variant={
