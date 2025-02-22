@@ -218,6 +218,7 @@ export class ScriptsService {
         id: command.command.id,
       };
     });
+
     return E.right(parsedScript);
   }
 }
