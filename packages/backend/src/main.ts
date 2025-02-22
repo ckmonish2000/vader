@@ -15,9 +15,9 @@ async function bootstrap() {
     }),
   );
 
-  const whitelist = process.env
-    .WHITELISTED_ORIGINS!.split(',')
-    .map((origin) => origin.trim());
+  const whitelist = process.env.WHITELISTED_ORIGINS!.split(',').map((origin) =>
+    origin.trim(),
+  );
 
   app.enableCors({
     origin: (origin, callback) => {
