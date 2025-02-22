@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CommandType {
+  USER_DEFINED
+  DEFAULT
+}
+
+model Command {
+  id        String   @id @default(uuid())
+  title     String
+  cmd       String
+  type      CommandType 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  scripts   ScriptCommand[]
+}
+
+model Script {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  commands  ScriptCommand[]
+}
+
+model ScriptCommand {
+  id        String   @id @default(uuid())
+  command   Command  @relation(fields: [commandId], references: [id])
+  commandId String
+  script    Script   @relation(fields: [scriptId], references: [id])
+  scriptId  String
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  outputs   CommandOutput[]
+  @@unique([commandId, scriptId])
+}
+
+model CommandOutput {
+  id        String   @id @default(uuid())
+  scriptCommandId String
+  scriptCommand ScriptCommand @relation(fields: [scriptCommandId], references: [id])
+  output    String
+  scriptId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
