@@ -9,6 +9,17 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ScriptsService } from './scripts.service';
 import CreateScriptDto from './dto/create-script-dto';
 import UpdateScriptDto from './dto/update-script-dto';
@@ -69,14 +80,5 @@ export class ScriptsController {
       throwHTTPErr(deletedScript.left);
     }
     return deletedScript.right;
-  }
-
-  @Get(':id/parsed')
-  async getParsedScript(@Param('id') id: string) {
-    const parsedScript = await this.scriptsService.getParsedScript(id);
-    if (E.isLeft(parsedScript)) {
-      throwHTTPErr(parsedScript.left);
-    }
-    return parsedScript.right;
   }
 }

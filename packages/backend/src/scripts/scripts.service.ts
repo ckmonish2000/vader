@@ -1,4 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import PrismaService from 'src/prisma/prisma.service';
 import CreateScriptDto from './dto/create-script-dto';
 import UpdateScriptDto from './dto/update-script-dto';
@@ -49,6 +50,17 @@ export class ScriptsService {
     });
   }
 
+  async getScript(id: string) {
+    const script = await this.prisma.script.findUnique({
+      where: { id },
+      include: {
+        commands: {
+          include: {
+            command: true,
+          },
+        },
+      },
+    });
   async getScript(id: string) {
     const script = await this.prisma.script.findUnique({
       where: { id },
