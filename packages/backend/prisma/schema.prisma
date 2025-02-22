@@ -18,8 +18,34 @@ enum CommandType {
   DEFAULT
 }
 
+
+model User {
+  uid              String     @id @default(cuid())
+  displayName      String?
+  email            String?    @unique
+  photoURL         String?
+  refreshToken     String?
+  providerAccounts Account[]
+  createdOn        DateTime   @default(now()) @db.Timestamp(3)
+}
+
+model Account {
+  id                   String   @id @default(cuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [uid], onDelete: Cascade)
+  provider             String
+  providerAccountId    String
+  providerRefreshToken String?
+  providerAccessToken  String?
+  providerScope        String?
+  loggedIn             DateTime @default(now()) @db.Timestamp(3)
+
+  @@unique(fields: [provider, providerAccountId], name: "verifyProviderAccount")
+}
+
+
 model Command {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   title     String
   cmd       String
   type      CommandType 
@@ -29,15 +55,16 @@ model Command {
 }
 
 model Script {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   name      String
+  updateCounter Int @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   commands  ScriptCommand[]
 }
 
 model ScriptCommand {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   command   Command  @relation(fields: [commandId], references: [id])
   commandId String
   script    Script   @relation(fields: [scriptId], references: [id],onDelete: Cascade)
@@ -50,7 +77,7 @@ model ScriptCommand {
 }
 
 model CommandOutput {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   scriptCommandId String
   scriptCommand ScriptCommand @relation(fields: [scriptCommandId], references: [id])
   output    String

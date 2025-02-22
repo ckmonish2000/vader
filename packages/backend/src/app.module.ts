@@ -3,10 +3,17 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CommandsModule } from './commands/commands.module';
 import { ScriptsModule } from './scripts/scripts.module';
+import { AuthModule } from './auth/auth.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [CommandsModule, ScriptsModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    CommandsModule,
+    ScriptsModule,
+    AuthModule,
+    PrismaModule,
+    UserModule
+  ],
 })
-export class AppModule {}
+export class AppModule { }
