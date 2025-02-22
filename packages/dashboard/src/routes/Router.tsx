@@ -14,7 +14,7 @@ export default function Router(): ReactElement<
     {
       element: (
         // <ErrorBoundary>
-        <RouteProtection protectionNeeded={false}>
+        <RouteProtection protectionNeeded={true}>
           <BaseLayout>
             <Suspense fallback={<PageLoader />}>
               <Outlet />

@@ -15,7 +15,7 @@ const ScriptCard: React.FC<ScriptCardProps> = ({ script }) => {
       onClick={() => navigate(`/script/${script.id}`)}
     >
       <h3 className="text-lg font-semibold">{script.name}</h3>
-      <p className="text-gray-600">{script.commands.length} commands</p>
+      {/* <p className="text-gray-600">{script.commands.length} commands</p> */}
     </div>
   );
 };

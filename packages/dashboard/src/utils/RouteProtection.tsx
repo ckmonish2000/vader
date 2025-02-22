@@ -1,43 +1,51 @@
-import { refresh } from '@/services/AuthService';
-import { me } from '@/services/UserService';
-import { useQuery } from '@tanstack/react-query';
-import { ReactElement } from 'react';
-import { Navigate } from 'react-router-dom';
+import { refresh } from "@/services/AuthService";
+import { me } from "@/services/UserService";
+import { useQuery } from "@tanstack/react-query";
+import { ReactElement } from "react";
+import { Navigate } from "react-router-dom";
+import { useUserStore } from "@/stores/UserStore";
+import type { User } from "@/types/User";
 
 interface Props {
-	protectionNeeded: boolean;
-	children: ReactElement;
+  protectionNeeded: boolean;
+  children: ReactElement;
 }
 
 const RouteProtection = ({ protectionNeeded, children }: Props) => {
-	if (!protectionNeeded) return children;
+  const setUser = useUserStore((state) => state.setUser);
 
-	const { isPending, isError } = useQuery({
-		queryKey: ['checkSession'],
-		queryFn: me,
-		retry: false,
-		refetchOnWindowFocus: false
-	});
+  if (!protectionNeeded) return children;
 
-	const refreshSession = useQuery({
-		queryKey: ['refreshSession'],
-		queryFn: refresh,
-		enabled: !!isError,
-		retry: false
-	});
+  const { isPending, isError, data, isSuccess } = useQuery({
+    queryKey: ["checkSession"],
+    queryFn: me,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
 
-	if (isPending) {
-		return <span>111Loading...</span>;
-	}
+  if (isSuccess) {
+    setUser(data);
+  }
 
-	// If request to refresh tokens fails, redirect to signin page
-	if (refreshSession.isError) {
-		return <Navigate to="/signin" replace />;
-	}
+  const refreshSession = useQuery({
+    queryKey: ["refreshSession"],
+    queryFn: refresh,
+    enabled: !!isError,
+    retry: false,
+  });
 
-	if (protectionNeeded && !isPending && !isError) {
-		return children;
-	}
+  if (isPending) {
+    return <span>111Loading...</span>;
+  }
+
+  // If request to refresh tokens fails, redirect to signin page
+  if (refreshSession.isError) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  if (protectionNeeded && !isPending && !isError) {
+    return children;
+  }
 };
 
 export default RouteProtection;

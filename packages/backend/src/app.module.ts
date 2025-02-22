@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { CommandsModule } from './commands/commands.module';
 import { ScriptsModule } from './scripts/scripts.module';
 import { AuthModule } from './auth/auth.module';
@@ -13,7 +11,7 @@ import { UserModule } from './user/user.module';
     ScriptsModule,
     AuthModule,
     PrismaModule,
-    UserModule
+    UserModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

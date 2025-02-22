@@ -18,6 +18,7 @@ const Home: React.FC = () => {
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading scripts</div>;
+  if (!scripts) return <div>No scripts available</div>;
 
   return (
     <div>
@@ -30,12 +31,17 @@ const Home: React.FC = () => {
           Create new script
         </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {scripts &&
-          scripts.map((script) => (
+      {scripts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {scripts.map((script) => (
             <ScriptCard key={script.id} script={script} />
           ))}
-      </div>
+        </div>
+      ) : (
+        <div className="text-center text-gray-500 mt-8">
+          No scripts found. Create a new script to get started.
+        </div>
+      )}
       <CreateScriptDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

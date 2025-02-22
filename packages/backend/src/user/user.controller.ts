@@ -4,11 +4,10 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { AuthUser } from 'src/types/AuthUser';
 import * as O from 'fp-ts/Option';
-import * as E from 'fp-ts/Either';
 import { throwHTTPErr } from 'src/utils';
 import { USER_NOT_FOUND } from 'src/errors';
 
-@Controller()
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

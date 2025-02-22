@@ -42,17 +42,19 @@ const UserAuthCard: React.FC = () => {
   );
 
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[350px] bg-white">
       <CardHeader>
-        <CardTitle>Welcome</CardTitle>
-        <CardDescription>Choose your login method</CardDescription>
+        <CardTitle className="text-center">Welcome</CardTitle>
+        <CardDescription className="text-center">
+          Choose your login method
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <Button
             variant="outline"
             onClick={() => handleSignIn("google")}
-            className="w-full"
+            className="w-full bg-white hover:bg-gray-50"
           >
             <svg
               className="mr-2 h-4 w-4"
@@ -74,15 +76,15 @@ const UserAuthCard: React.FC = () => {
           <Button
             variant="outline"
             onClick={() => handleSignIn("github")}
-            className="w-full"
+            className="w-full bg-white hover:bg-gray-50"
           >
             <Github className="mr-2 h-4 w-4" />
             Login with GitHub
           </Button>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-center">
-        <p className="text-xs text-center text-gray-600">
+      <CardFooter>
+        <p className="text-xs text-center text-gray-600 w-full">
           By logging in, you agree to our Terms of Service and Privacy Policy.
         </p>
       </CardFooter>
