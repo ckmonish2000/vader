@@ -40,7 +40,7 @@ model ScriptCommand {
   id        String   @id @default(uuid())
   command   Command  @relation(fields: [commandId], references: [id])
   commandId String
-  script    Script   @relation(fields: [scriptId], references: [id])
+  script    Script   @relation(fields: [scriptId], references: [id],onDelete: Cascade)
   scriptId  String
   order     Int
   createdAt DateTime @default(now())
