@@ -12,13 +12,20 @@ export class ScriptsService {
     constructor(private readonly prisma: PrismaService) { }
 
     async getScripts({ take = 10, cursor = undefined }: { take?: number, cursor?: string }) {
-
+        
         if (!cursor) {
             return this.prisma.script.findMany({
                 take,
                 orderBy: {
                     id: 'asc'
-                }
+                },
+                include: {
+                    commands: {
+                        include: {
+                            command: true,
+                        },
+                    },
+                },
             });
         }
 
