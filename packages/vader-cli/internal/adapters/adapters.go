@@ -11,6 +11,10 @@ import (
 	"github.com/ckmonish2000/vader/internal/scripts"
 )
 
+type PreviewCode struct {
+	OutputURL string `json:"outputURL"`
+}
+
 func VaderAdapter(outputs []scripts.ScriptOutput) (string, error) {
 	url := constants.URL("outputs")
 
@@ -34,5 +38,14 @@ func VaderAdapter(outputs []scripts.ScriptOutput) (string, error) {
 		return "", nil
 	}
 
-	return string(body), nil
+	var outputCode PreviewCode
+
+	err = json.Unmarshal([]byte(string(body)), &outputCode)
+	if err != nil {
+		return "Failed to generate preview link", err
+	}
+
+	fmt.Println(string(body), outputCode)
+	path := fmt.Sprintf("preview/%s", outputCode.OutputURL)
+	return constants.FEURL(path), nil
 }
