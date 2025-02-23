@@ -7,5 +7,6 @@ import { PrismaModule } from 'src/prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [ScriptsController],
   providers: [ScriptsService],
+  exports: [ScriptsService],
 })
 export class ScriptsModule {}

@@ -43,14 +43,14 @@ model Account {
 }
 
 model Command {
-  id         String          @id @default(cuid())
-  title      String
-  cmd        String
-  type       CommandType
+  id             String          @id @default(cuid())
+  title          String
+  cmd            String
+  type           CommandType
   isInputAllowed Boolean         @default(false)
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-  scripts    ScriptCommand[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  scripts        ScriptCommand[]
 }
 
 model Script {
@@ -60,6 +60,7 @@ model Script {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   commands      ScriptCommand[]
+  CommandOutput CommandOutput[]
 }
 
 model ScriptCommand {
@@ -83,6 +84,17 @@ model CommandOutput {
   scriptCommand   ScriptCommand @relation(fields: [scriptCommandId], references: [id])
   output          String
   scriptId        String
+  script          Script        @relation(fields: [scriptId], references: [id])
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+  PublicOutput    PublicOutput? @relation(fields: [publicOutputId], references: [id])
+  publicOutputId  String?
+}
+
+model PublicOutput {
+  id               String          @id @default(cuid())
+  commandOutputIds String[]
+  commandOutputs   CommandOutput[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 }

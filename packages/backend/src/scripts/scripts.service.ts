@@ -221,4 +221,23 @@ export class ScriptsService {
 
     return E.right(parsedScript);
   }
+
+  async getScriptCommand(id: string) {
+    const scriptCommand = await this.prisma.scriptCommand.findUnique({
+      where: { id },
+      include: {
+        command: true,
+        script: true,
+      },
+    });
+
+    if (!scriptCommand) {
+      return E.left(<RESTError>{
+        message: 'scripts/not_found',
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+
+    return E.right(scriptCommand);
+  }
 }
