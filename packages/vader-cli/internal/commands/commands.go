@@ -14,12 +14,15 @@ func RunCmd(cmd []string) {
 	}
 
 	command := cmd[0]
-	value := cmd[1]
 
 	switch command {
+	case "help":
+		fmt.Println("SUPPORTED COMMANDS")
+		fmt.Println("1. run <script Id> - will run your vader script and return preview link")
 	case "run":
 		fmt.Println("FETCHING: SCRIPT DETAILS \n")
 
+		value := cmd[1]
 		script, err := scripts.GetScript(value)
 		if err != nil {
 			fmt.Println("FAILED: TO GET SCRIPT DETAILS \n", err)
@@ -49,5 +52,7 @@ func RunCmd(cmd []string) {
 
 		fmt.Println("COMPLETED-SCRIPT-EXECUTION \n")
 		fmt.Println("HERE'S THE LINK: " + downloadUrl)
+	default:
+		fmt.Println("Invalid command: try running 'vader help'")
 	}
 }

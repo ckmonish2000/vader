@@ -29,7 +29,7 @@ With Vader, senior engineers can **define diagnostic scripts**, and junior engin
 Clone the project:
 
 ```bash
-git clone https://github.com/your-username/Vader.git
+git clone https://github.com/ckmonish2000/Vader.git
 ```
 
 Go to the project directory:
@@ -103,13 +103,13 @@ vader run <script-name>
 2. **List available scripts**:
 
 ```bash
-vader list
+vader help
 ```
 
 3. **Export logs to a file**:
 
 ```bash
-vader run <script-name> --output report.json
+vader run <script-id>
 ```
 
 ## Environment Variables
