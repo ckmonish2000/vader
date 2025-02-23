@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { updateScript, getScript } from "@/services/scriptService";
 import { toast } from "react-toastify";
 import { Command, ScriptCommand } from "@/types/Script";
+import { Copy } from "lucide-react";
 
 interface CommandWithArgs {
   id: string;
@@ -76,6 +77,13 @@ function ScriptBuilder() {
     setCommandsWithArgs(commandsWithArgs.filter((_, i) => i !== index));
   };
 
+  const handleCopyScriptId = () => {
+    if (scriptID) {
+      navigator.clipboard.writeText(scriptID);
+      toast.success("Script ID copied to clipboard");
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex h-full flex-col">
@@ -89,7 +97,17 @@ function ScriptBuilder() {
               ← Back
             </Button>
             <div className="flex items-center justify-between mb-4">
-              <PageHeading title={scriptData?.name || "Script Builder"} />
+              <div className="flex items-center gap-2">
+                <PageHeading title={scriptData?.name || "Script Builder"} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleCopyScriptId}
+                  title="Copy Script ID"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
               <Button onClick={() => setDialogOpen(true)}>Add Command</Button>
             </div>
 
