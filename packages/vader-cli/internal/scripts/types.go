@@ -10,7 +10,7 @@ type ParsedScript struct {
 }
 
 type ScriptOutput struct {
-	ScriptCommandID string `json:scriptCommandID`
+	ScriptCommandID string `json:"scriptCommandId"`
 	Output          string `json:"output"`
 }
 
