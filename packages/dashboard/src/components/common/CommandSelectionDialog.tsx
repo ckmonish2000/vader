@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Command } from "@/types/Script";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { getCommands } from "@/services/cmdService";
 
 interface CommandSelectionDialogProps {
@@ -25,13 +25,37 @@ function CommandSelectionDialog({
   onOpenChange,
   onCommandSelect,
 }: CommandSelectionDialogProps) {
-  const { data: commands = [] } = useQuery({
-    queryKey: ["commands"],
-    queryFn: getCommands,
-  });
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["commands"],
+      queryFn: ({ pageParam = null }) =>
+        getCommands({ cursor: pageParam, take: 15 }),
+      getNextPageParam: (lastPage) => {
+        if (lastPage.length < 15) return undefined;
+        return lastPage[lastPage.length - 1]?.id;
+      },
+      initialPageParam: null,
+    });
 
   const [selectedCommand, setSelectedCommand] = useState<Command | null>(null);
   const [commandInput, setCommandInput] = useState<string>("");
+
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLDivElement;
+    const scrollContainer = target.firstElementChild as HTMLDivElement;
+
+    if (!scrollContainer) return;
+
+    const isNearBottom =
+      scrollContainer.scrollHeight - target.scrollTop <=
+      target.clientHeight + 100;
+
+    if (isNearBottom && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
 
   const handleCommandSelect = () => {
     if (selectedCommand) {
@@ -53,20 +77,29 @@ function CommandSelectionDialog({
         <div className="flex gap-4 h-[500px]">
           {/* Left side - Command List */}
           <Card className="w-1/2">
-            <ScrollArea className="h-full">
+            <ScrollArea className="h-full" onScrollCapture={handleScroll}>
               <CardContent className="space-y-2 p-4">
-                {commands.map((command) => (
-                  <Button
-                    key={command.id}
-                    variant={
-                      selectedCommand?.id === command.id ? "secondary" : "ghost"
-                    }
-                    className="w-full justify-start"
-                    onClick={() => setSelectedCommand(command)}
-                  >
-                    <div className="font-medium">{command.title}</div>
-                  </Button>
-                ))}
+                {data?.pages.map((page) =>
+                  page.map((command) => (
+                    <Button
+                      key={command.id}
+                      variant={
+                        selectedCommand?.id === command.id
+                          ? "secondary"
+                          : "ghost"
+                      }
+                      className="w-full justify-start"
+                      onClick={() => setSelectedCommand(command)}
+                    >
+                      <div className="font-medium">{command.title}</div>
+                    </Button>
+                  ))
+                )}
+                {isFetchingNextPage && (
+                  <div className="py-2 text-center text-sm text-muted-foreground">
+                    Loading more commands...
+                  </div>
+                )}
               </CardContent>
             </ScrollArea>
           </Card>

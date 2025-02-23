@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { updateScript, getScript } from "@/services/scriptService";
 import { toast } from "react-toastify";
 import { Command, ScriptCommand } from "@/types/Script";
+import { Copy } from "lucide-react";
 
 interface CommandWithArgs {
   id: string;
@@ -36,11 +37,12 @@ function ScriptBuilder() {
         (sc: ScriptCommand) => sc.command
       );
       setCommands(scriptCommands);
-      // Initialize commandsWithArgs with existing commands and their args
       setCommandsWithArgs(
         scriptData.commands.map((sc: ScriptCommand) => ({
           id: sc.command.id,
-          args: sc.args || undefined,
+          args: sc.args
+            ? Object.values(JSON.parse(sc.args)).join(", ")
+            : undefined,
         }))
       );
     }
@@ -49,7 +51,23 @@ function ScriptBuilder() {
   const { mutate: saveScriptMutation, isPending } = useMutation({
     mutationFn: async () => {
       if (!scriptID) throw new Error("No script ID provided");
-      return updateScript(scriptID, commandsWithArgs);
+
+      const formattedCommands = commandsWithArgs.map((cmd) => {
+        if (!cmd.args) return { id: cmd.id, args: null };
+
+        const argValues = cmd.args.split(",").map((arg) => arg.trim());
+        const numberedArgs = argValues.reduce((acc, val, idx) => {
+          acc[`$${idx + 1}`] = val;
+          return acc;
+        }, {} as Record<string, string>);
+
+        return {
+          id: cmd.id,
+          args: JSON.stringify(numberedArgs),
+        };
+      });
+
+      return updateScript(scriptID, formattedCommands);
     },
     onSuccess: () => {
       toast.success("Script saved successfully");
@@ -76,6 +94,13 @@ function ScriptBuilder() {
     setCommandsWithArgs(commandsWithArgs.filter((_, i) => i !== index));
   };
 
+  const handleCopyScriptId = () => {
+    if (scriptID) {
+      navigator.clipboard.writeText(scriptID);
+      toast.success("Script ID copied to clipboard");
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex h-full flex-col">
@@ -89,7 +114,17 @@ function ScriptBuilder() {
               ← Back
             </Button>
             <div className="flex items-center justify-between mb-4">
-              <PageHeading title={scriptData?.name || "Script Builder"} />
+              <div className="flex items-center gap-2">
+                <PageHeading title={scriptData?.name || "Script Builder"} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleCopyScriptId}
+                  title="Copy Script ID"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
               <Button onClick={() => setDialogOpen(true)}>Add Command</Button>
             </div>
 

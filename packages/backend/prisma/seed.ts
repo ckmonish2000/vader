@@ -136,7 +136,7 @@ async function main() {
       // Environment Variables
       {
         title: 'Check Specific Environment Variable',
-        cmd: 'echo $MY_ENV_VAR',
+        cmd: 'echo $1',
         type: 'DEFAULT',
         isInputAllowed: true,
       },
