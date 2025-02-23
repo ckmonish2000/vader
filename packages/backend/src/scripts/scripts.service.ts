@@ -60,17 +60,6 @@ export class ScriptsService {
         },
       },
     });
-  async getScript(id: string) {
-    const script = await this.prisma.script.findUnique({
-      where: { id },
-      include: {
-        commands: {
-          include: {
-            command: true,
-          },
-        },
-      },
-    });
 
     if (!script) {
       return E.left(<RESTError>{
@@ -132,14 +121,6 @@ export class ScriptsService {
         where: { id },
       });
 
-      return E.right(script.right);
-    } catch (error) {
-      return E.left(<RESTError>{
-        message: 'scripts/delete_failed',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      });
-    }
-  }
       return E.right(script.right);
     } catch (error) {
       return E.left(<RESTError>{
