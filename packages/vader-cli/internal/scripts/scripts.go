@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/ckmonish2000/vader/internal/constants"
+	"github.com/ckmonish2000/vader/internal/runners"
 )
 
 func GetScript(scriptId string) ([]ParsedScript, error) {
@@ -30,4 +31,21 @@ func GetScript(scriptId string) ([]ParsedScript, error) {
 	}
 
 	return commands, nil
+}
+
+func ExecuteScript(commands []ParsedScript) []ScriptOutput {
+	var outputs []ScriptOutput
+	for _, command := range commands {
+		output, err := runners.Bash(command.Command)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		outputs = append(outputs, ScriptOutput{
+			ScriptCommandID: command.ScriptCommandID,
+			Output:          output,
+		})
+	}
+	return outputs
 }

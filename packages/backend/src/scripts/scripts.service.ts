@@ -210,14 +210,19 @@ export class ScriptsService {
           command: cmd,
           title: command.command.title,
           id: command.command.id,
+          scriptCommandId: command.id,
+          scriptId: script.right.id,
         };
       }
       return {
         command: command.command.cmd,
         title: command.command.title,
         id: command.command.id,
+        scriptCommandId: command.id,
+        scriptId: script.right.id,
       };
     });
+
 
     return E.right(parsedScript);
   }

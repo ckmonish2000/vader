@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 
+	"github.com/ckmonish2000/vader/internal/adapters"
 	"github.com/ckmonish2000/vader/internal/scripts"
 )
 
@@ -22,6 +23,14 @@ func RunCmd(cmd []string) {
 			fmt.Println("Error getting script", err)
 			return
 		}
-		fmt.Println(script)
+		outputs := scripts.ExecuteScript(script)
+		downloadUrl, err := adapters.VaderAdapter(outputs)
+
+		if err != nil {
+			fmt.Println("Error getting download URL", err)
+			return
+		}
+
+		fmt.Println(downloadUrl)
 	}
 }
