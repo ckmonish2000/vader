@@ -50,7 +50,26 @@ function ScriptBuilder() {
   const { mutate: saveScriptMutation, isPending } = useMutation({
     mutationFn: async () => {
       if (!scriptID) throw new Error("No script ID provided");
-      return updateScript(scriptID, commandsWithArgs);
+
+      // Transform commandsWithArgs to have numbered arguments
+      const formattedCommands = commandsWithArgs.map((cmd) => {
+        if (!cmd.args) return { id: cmd.id, args: undefined };
+
+        // Split args by comma and trim whitespace
+        const argValues = cmd.args.split(",").map((arg) => arg.trim());
+        // Create numbered key-value pairs
+        const numberedArgs = argValues.reduce((acc, val, idx) => {
+          acc[`$${idx + 1}`] = val;
+          return acc;
+        }, {} as Record<string, string>);
+
+        return {
+          id: cmd.id,
+          args: JSON.stringify(numberedArgs),
+        };
+      });
+
+      return updateScript(scriptID, formattedCommands);
     },
     onSuccess: () => {
       toast.success("Script saved successfully");
