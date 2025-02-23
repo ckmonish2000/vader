@@ -6,6 +6,8 @@ Vader is a **self-hostable, open-source tool** for automating **environment chec
 
 With Vader, senior engineers can **define diagnostic scripts**, and junior engineers or contributors can execute them with a single command to **collect system information, validate dependencies, and debug faster**.
 
+Video demo here: [Vader Demo](https://www.loom.com/share/bbe81b692a2640a8b09f5991efbb1460?sid=77df57e0-ed35-452d-9027-4d0d2bae70cb)
+
 ## Features
 
 - Help developers quickly diagnose and verify their local environments.

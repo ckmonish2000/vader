@@ -45,7 +45,6 @@ func VaderAdapter(outputs []scripts.ScriptOutput) (string, error) {
 		return "Failed to generate preview link", err
 	}
 
-	fmt.Println(string(body), outputCode)
 	path := fmt.Sprintf("preview/%s", outputCode.OutputURL)
 	return constants.FEURL(path), nil
 }
