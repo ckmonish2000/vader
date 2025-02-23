@@ -5,6 +5,7 @@ import { authRoutes } from "./authRoutes";
 import RouteProtection from "../utils/RouteProtection";
 import PageLoader from "../components/common/PageLoader";
 import BaseLayout from "../layout/BaseLayout";
+import { publicRoutes } from "./publicRoutes";
 
 export default function Router(): ReactElement<
   any,
@@ -35,7 +36,7 @@ export default function Router(): ReactElement<
         </RouteProtection>
         // </ErrorBoundary>
       ),
-      children: [...authRoutes],
+      children: [...authRoutes, ...publicRoutes],
     },
   ]);
 
