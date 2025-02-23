@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALL_DIR="/usr/local/bin"
-EXECUTABLE_NAME="your-cli-name"  # Replace with your CLI name
+EXECUTABLE_NAME="vader"  # Replace with your CLI name
 EXECUTABLE_PATH="$INSTALL_DIR/$EXECUTABLE_NAME"
 USE_SUDO="false"
 OS=""
