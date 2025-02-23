@@ -44,7 +44,11 @@ export class CommandsController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async createCommand(@Body() command: CreateCommandDto) {
-    return this.commandsService.createCommand(command);
+    const cmd = await this.commandsService.createCommand(command);
+    if (E.isLeft(cmd)) {
+      throwHTTPErr(cmd.left);
+    }
+    return cmd.right;
   }
 
   @Patch(':id')
