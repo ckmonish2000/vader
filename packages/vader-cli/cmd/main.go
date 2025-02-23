@@ -1,7 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+
+	"github.com/ckmonish2000/vader/internal/commands"
+)
 
 func main() {
-	fmt.Println("Welcome to Vader CLI")
+	args := os.Args[1:]
+
+	fmt.Println("Welcome to Vader 👑 \n")
+
+	commands.RunCmd(args)
 }
