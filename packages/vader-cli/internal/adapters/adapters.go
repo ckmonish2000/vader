@@ -12,7 +12,7 @@ import (
 )
 
 func VaderAdapter(outputs []scripts.ScriptOutput) (string, error) {
-	url := constants.URL("scripts/executexxxx")
+	url := constants.URL("outputs")
 
 	jsonData, err := json.Marshal(outputs)
 	if err != nil {

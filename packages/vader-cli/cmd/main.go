@@ -10,7 +10,7 @@ import (
 func main() {
 	args := os.Args[1:]
 
-	fmt.Println("Welcome to Vader CLI")
+	fmt.Println("Welcome to Vader 👑 \n")
 
 	commands.RunCmd(args)
 }

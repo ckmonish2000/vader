@@ -212,6 +212,7 @@ export class ScriptsService {
           id: command.command.id,
           scriptCommandId: command.id,
           scriptId: script.right.id,
+          scriptName: script.right.name,
         };
       }
       return {
@@ -220,6 +221,7 @@ export class ScriptsService {
         id: command.command.id,
         scriptCommandId: command.id,
         scriptId: script.right.id,
+        scriptName: script.right.name
       };
     });
 

@@ -3,6 +3,7 @@ package scripts
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -33,19 +34,25 @@ func GetScript(scriptId string) ([]ParsedScript, error) {
 	return commands, nil
 }
 
-func ExecuteScript(commands []ParsedScript) []ScriptOutput {
+func ExecuteScript(commands []ParsedScript) ([]ScriptOutput, ScriptExecutionMetric) {
 	var outputs []ScriptOutput
+	success, failure := 0, 0
 	for _, command := range commands {
+
+		fmt.Println("EXECUTING CMD: " + command.Title + "\n")
 		output, err := runners.Bash(command.Command)
 
 		if err != nil {
 			log.Fatal(err)
+			failure += 1
+			return []ScriptOutput{}, ScriptExecutionMetric{Success: 0, Failure: 0}
 		}
 
+		success += 1
 		outputs = append(outputs, ScriptOutput{
 			ScriptCommandID: command.ScriptCommandID,
 			Output:          output,
 		})
 	}
-	return outputs
+	return outputs, ScriptExecutionMetric{Success: success, Failure: failure}
 }

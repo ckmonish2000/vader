@@ -18,12 +18,19 @@ func RunCmd(cmd []string) {
 
 	switch command {
 	case "run":
+		fmt.Println("FETCHING: SCRIPT DETAILS \n")
+
 		script, err := scripts.GetScript(value)
 		if err != nil {
-			fmt.Println("Error getting script", err)
+			fmt.Println("FAILED: TO GET SCRIPT DETAILS \n", err)
 			return
 		}
-		outputs := scripts.ExecuteScript(script)
+
+		fmt.Println("=============================\n")
+		scriptName := script[0].ScriptName
+		fmt.Println("EXECUTING-SCRIPT: " + scriptName + "\n")
+
+		outputs, metrics := scripts.ExecuteScript(script)
 		downloadUrl, err := adapters.VaderAdapter(outputs)
 
 		if err != nil {
@@ -31,6 +38,16 @@ func RunCmd(cmd []string) {
 			return
 		}
 
-		fmt.Println(downloadUrl)
+		successMsg := fmt.Sprintf("SUCCESS: %d", metrics.Success)
+		failureMsg := fmt.Sprintf("FAILED: %d", metrics.Failure)
+
+		fmt.Println("=============================")
+		fmt.Println("SUMMARY: \n")
+		fmt.Println(successMsg)
+		fmt.Println(failureMsg)
+		fmt.Println("=============================\n")
+
+		fmt.Println("COMPLETED-SCRIPT-EXECUTION \n")
+		fmt.Println("HERE'S THE LINK: " + downloadUrl)
 	}
 }

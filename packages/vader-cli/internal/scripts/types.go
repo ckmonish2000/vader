@@ -6,9 +6,15 @@ type ParsedScript struct {
 	ID              string `json:"id"`
 	ScriptCommandID string `json:"scriptCommandId"`
 	ScriptId        string `json:"scriptId"`
+	ScriptName      string `json:"scriptName"`
 }
 
 type ScriptOutput struct {
 	ScriptCommandID string `json:scriptCommandID`
 	Output          string `json:"output"`
+}
+
+type ScriptExecutionMetric struct {
+	Success int
+	Failure int
 }
