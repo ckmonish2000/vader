@@ -37,11 +37,12 @@ function ScriptBuilder() {
         (sc: ScriptCommand) => sc.command
       );
       setCommands(scriptCommands);
-      // Initialize commandsWithArgs with existing commands and their args
       setCommandsWithArgs(
         scriptData.commands.map((sc: ScriptCommand) => ({
           id: sc.command.id,
-          args: sc.args || undefined,
+          args: sc.args
+            ? Object.values(JSON.parse(sc.args)).join(", ")
+            : undefined,
         }))
       );
     }
@@ -51,13 +52,10 @@ function ScriptBuilder() {
     mutationFn: async () => {
       if (!scriptID) throw new Error("No script ID provided");
 
-      // Transform commandsWithArgs to have numbered arguments
       const formattedCommands = commandsWithArgs.map((cmd) => {
-        if (!cmd.args) return { id: cmd.id, args: undefined };
+        if (!cmd.args) return { id: cmd.id, args: null };
 
-        // Split args by comma and trim whitespace
         const argValues = cmd.args.split(",").map((arg) => arg.trim());
-        // Create numbered key-value pairs
         const numberedArgs = argValues.reduce((acc, val, idx) => {
           acc[`$${idx + 1}`] = val;
           return acc;
