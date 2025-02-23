@@ -22,6 +22,13 @@ export class ScriptsService {
         orderBy: {
           id: 'asc',
         },
+        include: {
+          commands: {
+            include: {
+              command: true,
+            },
+          },
+        },
       });
     }
 
@@ -32,9 +39,27 @@ export class ScriptsService {
       orderBy: {
         id: 'asc',
       },
+      include: {
+        commands: {
+          include: {
+            command: true,
+          },
+        },
+      },
     });
   }
 
+  async getScript(id: string) {
+    const script = await this.prisma.script.findUnique({
+      where: { id },
+      include: {
+        commands: {
+          include: {
+            command: true,
+          },
+        },
+      },
+    });
   async getScript(id: string) {
     const script = await this.prisma.script.findUnique({
       where: { id },
@@ -107,6 +132,14 @@ export class ScriptsService {
         where: { id },
       });
 
+      return E.right(script.right);
+    } catch (error) {
+      return E.left(<RESTError>{
+        message: 'scripts/delete_failed',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
       return E.right(script.right);
     } catch (error) {
       return E.left(<RESTError>{
@@ -204,6 +237,7 @@ export class ScriptsService {
         id: command.command.id,
       };
     });
+
     return E.right(parsedScript);
   }
 }
