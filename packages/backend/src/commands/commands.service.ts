@@ -5,6 +5,7 @@ import UpdateCommandDto from './dtos/update-command-dto';
 import * as E from 'fp-ts/Either';
 import { RESTError } from 'src/types/RESTError';
 import { CommandType } from '@prisma/client';
+import { validateCommand } from 'src/utils';
 
 @Injectable()
 export class CommandsService {
@@ -67,6 +68,13 @@ export class CommandsService {
         return E.left(cmd.left);
       }
 
+      if (!validateCommand(command.cmd)) {
+        return E.left(<RESTError>{
+          message: 'commands/invalid_command',
+          statusCode: HttpStatus.BAD_REQUEST,
+        });
+      }
+
       const updatedCommand = await this.prisma.command.update({
         where: { id },
         data: command,
@@ -81,9 +89,18 @@ export class CommandsService {
   }
 
   async createCommand(command: CreateCommandDto) {
-    return this.prisma.command.create({
+    if (!validateCommand(command.cmd)) {
+      return E.left(<RESTError>{
+        message: 'commands/invalid_command',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const newCommand = await this.prisma.command.create({
       data: command,
     });
+
+    return E.right(newCommand);
   }
 
   async deleteCommand(id: string) {

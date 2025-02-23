@@ -71,10 +71,12 @@ export class ScriptsController {
     return deletedScript.right;
   }
 
-
   @Get(':id/parsed')
   async getParsedScript(@Param('id') id: string) {
     const parsedScript = await this.scriptsService.getParsedScript(id);
-    return parsedScript;
+    if (E.isLeft(parsedScript)) {
+      throwHTTPErr(parsedScript.left);
+    }
+    return parsedScript.right;
   }
 }
